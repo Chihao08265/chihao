@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ChiHao ⚡️ Full Platform</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ================= CSS VARIABLES & THEMES ================= */
+        :root {
+            --bg: #09090b; --box: #16161a; --br: #333; --txt: #fff; --sub: #aaa;
+            --primary: #ff8c00; --grad: linear-gradient(135deg, #ff8c00, #ff2a00);
+            --win: #00ff88; --lose: #ff3333; --bg-img: url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1974&auto=format&fit=crop');
+        }
+        body.t-1 { --primary: #ff8c00; --grad: linear-gradient(135deg, #ff8c00, #ff2a00); }
+        body.t-2 { --primary: #00e5ff; --grad: linear-gradient(135deg, #00e5ff, #0055ff); }
+        body.t-3 { --primary: #ff0055; --grad: linear-gradient(135deg, #ff0055, #7a00ff); }
+        body.t-4 { --primary: #00ff88; --grad: linear-gradient(135deg, #00ff88, #008f4c); }
+        body.t-5 { --primary: #fceb00; --grad: linear-gradient(135deg, #fceb00, #ff8c00); }
+        body.t-6 { --primary: #c700ff; --grad: linear-gradient(135deg, #c700ff, #5e00ff); }
+        body.t-7 { --primary: #ff0044; --grad: linear-gradient(135deg, #ff0044, #ff8c00); }
+        body.t-8 { --primary: #00ffcc; --grad: linear-gradient(135deg, #00ffcc, #0055ff); }
+        body.t-9 { --primary: #ffffff; --grad: linear-gradient(135deg, #ffffff, #aaaaaa); }
+        body.t-10 { --primary: #ff6b00; --grad: linear-gradient(135deg, #ff6b00, #ff0044); }
+
+        body.bg-1 { --bg-img: url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1974&auto=format&fit=crop'); }
+        body.bg-2 { --bg-img: url('https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=2070&auto=format&fit=crop'); }
+        body.bg-3 { --bg-img: url('https://images.unsplash.com/photo-1628260412297-a3377e45006f?q=80&w=1974&auto=format&fit=crop'); }
+        body.bg-4 { --bg-img: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1974&auto=format&fit=crop'); }
+        body.bg-5 { --bg-img: url('https://images.unsplash.com/photo-1581833971358-2c5509b8c150?q=80&w=2071&auto=format&fit=crop'); }
+        body.bg-6 { --bg-img: url('https://images.unsplash.com/photo-1542451313-32e813a2c221?q=80&w=2070&auto=format&fit=crop'); }
+
+        /* ================= GLOBAL RESET ================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; outline: none; }
+        body { background: var(--bg); color: var(--txt); height: 100vh; display: flex; overflow: hidden; transition: background 0.3s; }
+        .bg-overlay { position: fixed; inset: 0; background-image: var(--bg-img); background-size: cover; background-position: center; filter: blur(20px) brightness(0.2); z-index: -1; }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+
+        /* ================= LAYOUT ================= */
+        .app { display: flex; width: 100%; height: 100%; }
+        .sidebar { width: 250px; background: rgba(20,20,28,0.9); backdrop-filter: blur(15px); border-right: 1px solid var(--br); padding: 20px; display: flex; flex-direction: column; z-index: 100; }
+        .main { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .brand { font-family: 'Orbitron'; font-size: 1.8rem; text-align: center; margin-bottom: 20px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+        .nav { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .nav-btn { background: transparent; border: none; color: var(--sub); padding: 12px; border-radius: 10px; font-size: 0.95rem; font-weight: 800; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .nav-btn.active { background: var(--grad); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        
+        .profile { background: var(--box); border: 1px solid var(--br); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; font-weight: 900; }
+        .p-info h4 { font-size: 0.9rem; } .p-info p { font-size: 0.8rem; color: var(--win); font-weight: 800; }
+        .btn-logout { width: 100%; padding: 10px; background: rgba(255,51,51,0.1); color: var(--lose); border: 1px solid var(--lose); border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+
+        /* ================= SCREENS & TABS ================= */
+        .screen { display: none; width: 100%; height: 100%; }
+        .screen.active { display: block; animation: fIn 0.3s; }
+        .tab { display: none; }
+        .tab.active { display: block; animation: fIn 0.3s; }
+        @keyframes fIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= AUTH ================= */
+        .auth { background: var(--box); border: 1px solid var(--br); border-radius: 15px; padding: 30px; max-width: 400px; margin: 40px auto; text-align: center; }
+        .auth h2 { font-family: 'Orbitron'; margin-bottom: 20px; }
+        .input-grp { margin-bottom: 15px; text-align: left; }
+        .input-grp label { font-size: 0.9rem; color: var(--sub); font-weight: 800; margin-bottom: 5px; display: block; }
+        .inp { width: 100%; padding: 12px; background: #000; border: 1px solid var(--br); border-radius: 10px; color: #fff; font-size: 1rem; font-weight: 700; }
+        .inp:focus { border-color: var(--primary); }
+        .btn-submit { width: 100%; padding: 12px; background: var(--grad); color: #fff; border: none; border-radius: 10px; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        .err { color: var(--lose); font-weight: 800; margin-top: 10px; display: none; }
+        
+        .pin-grp { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+        .pin-box { width: 40px; height: 50px; text-align: center; font-size: 1.5rem; font-weight: 900; background: #000; border: 1px solid var(--br); border-radius: 8px; color: #fff; }
+
+        /* ================= GAME UI ================= */
+        .g-head { font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-rst { background: rgba(255,51,51,0.2); color: var(--lose); border: 1px solid var(--lose); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; cursor: pointer; }
+        
+        .board { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #000; padding: 15px; border-radius: 12px; border: 1px solid var(--br); min-height: 65px; margin-bottom: 15px; }
+        .node { width: 45px; height: 45px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; color: #fff; }
+        .node.empty { background: rgba(255,255,255,0.05); border: 1px dashed var(--br); }
+        .node.b { background: #ff3333; } .node.p { background: #3388ff; } .node.t { background: #33cc33; }
+        .node.tai { background: #111; border: 1px solid #555; } .node.xiu { background: #fff; color: #000; }
+
+        .ctrl { background: var(--box); border: 1px solid var(--br); padding: 15px; border-radius: 12px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .btn-ctrl { padding: 15px 0; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 900; color: #fff; cursor: pointer; }
+        .btn-ctrl:active { transform: scale(0.95); }
+        .btn-b { background: #cc0000; } .btn-p { background: #005ce6; } .btn-t { background: #00b300; }
+        .btn-tai { background: #222; border: 1px solid #555; } .btn-xiu { background: #ddd; color: #000; }
+        .btn-undo { background: #555; }
+        .btn-run { width: 100%; padding: 15px; background: var(--grad); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 900; cursor: pointer; }
+
+        /* Loading */
+        .loading { display: none; text-align: center; margin-top: 10px; }
+        .loading-txt { color: var(--primary); font-weight: 800; margin-bottom: 5px; }
+        .progress { height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.1s; }
+
+        /* Result */
+        .result { display: none; background: var(--box); border: 2px solid var(--primary); border-radius: 12px; padding: 20px; text-align: center; margin-top: 15px; }
+        .pred { font-family: 'Orbitron'; font-size: 2.5rem; font-weight: 900; margin: 10px 0; }
+        .pred-b { color: #ff3333; } .pred-p { color: #3388ff; } .pred-t { color: #33cc33; }
+        .pred-tai { background: #000; border: 1px solid #555; padding: 5px 20px; border-radius: 8px; display: inline-block; }
+        .pred-xiu { background: #fff; color: #000; padding: 5px 20px; border-radius: 8px; display: inline-block; }
+
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-card { background: #222; padding: 10px; border-radius: 8px; border: 1px solid #444; }
+        .stat-val { font-size: 1.2rem; font-weight: 900; color: var(--primary); }
+        .stat-lbl { font-size: 0.7rem; color: var(--sub); font-weight: 700; text-transform: uppercase; margin-top: 5px; }
+        .note { margin-top: 15px; font-size: 0.85rem; color: #ccc; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--primary); text-align: left; font-style: italic; }
+
+        /* Sync */
+        .sync-area { margin-top: 15px; border-top: 1px dashed #444; padding-top: 15px; }
+        .sync-grid { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .sync-msg { font-size: 1.2rem; font-weight: 900; margin-top: 10px; }
+
+        /* Admin */
+        .admin-card { background: var(--box); border: 1px solid var(--br); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .admin-card h3 { font-size: 1rem; margin-bottom: 10px; color: var(--primary); }
+        .data-list { max-height: 300px; overflow-y: auto; }
+        .data-item { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--br); }
+        .data-item span { font-size: 0.9rem; font-weight: 700; }
+        
+        .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
+        .swatch { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .swatch.active { border-color: #fff; }
+        .bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .bg-item { height: 50px; border-radius: 8px; cursor: pointer; background-size: cover; border: 2px solid transparent; }
+        .bg-item.active { border-color: var(--primary); }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .app { flex-direction: column; }
+            .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--br); border-radius: 15px 15px 0 0; }
+            .brand, .profile, .btn-logout { display: none; }
+            .nav { flex-direction: row; justify-content: space-around; width: 100%; padding: 0 5px; }
+            .nav-btn { flex-direction: column; padding: 8px; font-size: 0.7rem; gap: 3px; flex: 1; text-align: center; }
+            .nav-btn.active { background: transparent; color: var(--primary); box-shadow: none; }
+            .main { padding: 15px; padding-bottom: 80px; height: calc(100vh - 65px); }
+            .board { padding: 10px; gap: 5px; }
+            .node { width: 40px; height: 40px; font-size: 1rem; }
+            .btn-ctrl { padding: 12px 0; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body class="t-1 bg-1">
+    <div class="bg-overlay"></div>
+    <audio id="bgm" loop></audio>
+
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar" style="display:none;">
+            <div class="brand">ChiHao ⚡️</div>
+            
+            <div class="nav" id="nav-admin">
+                <button class="nav-btn active" data-tab="ad-bcr"><i class="fas fa-dice"></i> Baccarat</button>
+                <button class="nav-btn" data-tab="ad-tx"><i class="fas fa-dice-d6"></i> Tài Xỉu</button>
+                <button class="nav-btn" data-tab="ad-acc"><i class="fas fa-users"></i> Kho Acc</button>
+                <button class="nav-btn" data-tab="ad-sys"><i class="fas fa-cogs"></i> Hệ Thống</button>
+            </div>
+
+            <div class="nav" id="nav-user" style="display:none;">
+                <button class="nav-btn active" data-tab="us-bcr"><i class="fas fa-dice"></i> Baccarat</button>
+                <button class="nav-btn" data-tab="us-tx"><i class="fas fa-dice-d6"></i> Tài Xỉu</button>
+            </div>
+
+            <div class="profile">
+                <div class="avatar" id="p-avt">🛡️</div>
+                <div class="p-info">
+                    <h4 id="p-name">Admin</h4>
+                    <p id="p-coins">Vô Hạn Xu</p>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="Auth.logout()">Đăng Xuất</button>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            
+            <!-- 1. LOGIN -->
+            <div id="s-login" class="screen active">
+                <div class="auth">
+                    <h2>Đăng Nhập</h2>
+                    <div class="input-grp"><label>Tên</label><input type="text" id="u-in" class="inp"></div>
+                    <div class="input-grp"><label>Pass</label><input type="password" id="p-in" class="inp"></div>
+                    <button class="btn-submit" onclick="Auth.check()">Tiếp Tục</button>
+                    <div id="e-login" class="err">Sai tài khoản!</div>
+                </div>
+            </div>
+
+            <!-- 2. PIN -->
+            <div id="s-pin" class="screen">
+                <div class="auth">
+                    <h2>Xác Thực</h2>
+                    <div class="pin-grp">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="0">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="1">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="2">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="3">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="4">
+                        <input type="tel" maxlength="1" class="pin-box" data-i="5">
+                    </div>
+                    <button class="btn-submit" onclick="Auth.pin()">Xác Nhận</button>
+                    <div id="e-pin" class="err">Sai PIN!</div>
+                </div>
+            </div>
+
+            <!-- 3. DASHBOARD -->
+            <div id="s-dash" class="screen">
+                
+                <!-- ADMIN BACCARAT -->
+                <div id="t-ad-bcr" class="tab active">
+                    <div class="g-head">Baccarat <button class="btn-rst" onclick="Game.rst('ad','bcr')">Reset</button></div>
+                    <div class="board" id="b-ad-bcr"></div>
+                    <div class="ctrl">
+                        <div class="grid-4">
+                            <button class="btn-ctrl btn-b" onclick="Game.add('ad','bcr','B')">B</button>
+                            <button class="btn-ctrl btn-p" onclick="Game.add('ad','bcr','P')">P</button>
+                            <button class="btn-ctrl btn-t" onclick="Game.add('ad','bcr','T')">T</button>
+                            <button class="btn-ctrl btn-undo" onclick="Game.und('ad','bcr')">⌫</button>
+                        </div>
+                        <button class="btn-run" onclick="Game.run('ad','bcr')">PHÂN TÍCH</button>
+                        <div class="loading" id="l-ad-bcr"><div class="loading-txt" id="tx-ad-bcr">0%</div><div class="progress"><div class="progress-fill" id="pf-ad-bcr"></div></div></div>
+                    </div>
+                    <div class="result" id="r-ad-bcr">
+                        <div>Dự đoán:</div><div class="pred" id="pd-ad-bcr">-</div>
+                        <div class="stats" id="st-ad-bcr"></div><div class="note" id="nt-ad-bcr"></div>
+                        <div class="sync-area">
+                            <div>Kết quả:</div>
+                            <div class="sync-grid">
+                                <button class="btn-ctrl btn-b" style="width:55px" onclick="Game.syn('ad','bcr','B')">B</button>
+                                <button class="btn-ctrl btn-p" style="width:55px" onclick="Game.syn('ad','bcr','P')">P</button>
+                                <button class="btn-ctrl btn-t" style="width:55px" onclick="Game.syn('ad','bcr','T')">T</button>
+                            </div>
+                            <div class="sync-msg" id="m-ad-bcr"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAI XIU -->
+                <div id="t-ad-tx" class="tab">
+                    <div class="g-head">Tài Xỉu <button class="btn-rst" onclick="Game.rst('ad','tx')">Reset</button></div>
+                    <div class="board" id="b-ad-tx"></div>
+                    <div class="ctrl">
+                        <div class="grid-2">
+                            <button class="btn-ctrl btn-tai" onclick="Game.add('ad','tx','T')">TÀI</button>
+                            <button class="btn-ctrl btn-xiu" onclick="Game.add('ad','tx','X')">XỈU</button>
+                        </div>
+                        <button class="btn-ctrl btn-undo" style="width:100%;margin-bottom:10px" onclick="Game.und('ad','tx')">⌫ Xóa</button>
+                        <button class="btn-run" onclick="Game.run('ad','tx')">PHÂN TÍCH</button>
+                        <div class="loading" id="l-ad-tx"><div class="loading-txt" id="tx-ad-tx">0%</div><div class="progress"><div class="progress-fill" id="pf-ad-tx"></div></div></div>
+                    </div>
+                    <div class="result" id="r-ad-tx">
+                        <div>Dự đoán:</div><div class="pred" id="pd-ad-tx">-</div>
+                        <div class="stats" id="st-ad-tx"></div><div class="note" id="nt-ad-tx"></div>
+                        <div class="sync-area">
+                            <div>Kết quả:</div>
+                            <div class="sync-grid">
+                                <button class="btn-ctrl btn-tai" style="width:80px" onclick="Game.syn('ad','tx','T')">TÀI</button>
+                                <button class="btn-ctrl btn-xiu" style="width:80px" onclick="Game.syn('ad','tx','X')">XỈU</button>
+                            </div>
+                            <div class="sync-msg" id="m-ad-tx"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN ACCOUNTS -->
+                <div id="t-ad-acc" class="tab">
+                    <div class="admin-card">
+                        <h3>Tạo Tài Khoản</h3>
+                        <input type="text" id="n-u" class="inp" placeholder="Tên..." style="margin-bottom:8px">
+                        <input type="text" id="n-p" class="inp" placeholder="Pass..." style="margin-bottom:8px">
+                        <input type="number" id="n-c" class="inp" placeholder="Xu..." style="margin-bottom:10px">
+                        <button class="btn-submit" onclick="Admin.create()">Tạo Ngay</button>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Cấp Xu</h3>
+                        <input type="text" id="g-u" class="inp" placeholder="Tên..." style="margin-bottom:8px">
+                        <input type="number" id="g-c" class="inp" placeholder="Xu..." style="margin-bottom:10px">
+                        <button class="btn-submit" onclick="Admin.give()">Cấp Xu</button>
+                    </div>
+                    <div class="data-list" id="acc-list"></div>
+                </div>
+
+                <!-- ADMIN SETTINGS -->
+                <div id="t-ad-sys" class="tab">
+                    <div class="admin-card">
+                        <h3>Cấu Hình Nhạc</h3>
+                        <input type="text" id="m-t" class="inp" placeholder="Tên nhạc..." style="margin-bottom:8px">
+                        <input type="text" id="m-s" class="inp" placeholder="Link MP3..." style="margin-bottom:10px">
+                        <button class="btn-submit" onclick="Audio.save()">Lưu Nhạc</button>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Màu Sắc</h3>
+                        <div class="swatches" id="sw-t"></div>
+                        <h3>Hình Nền</h3>
+                        <div class="bg-grid" id="sw-b"></div>
+                    </div>
+                </div>
+
+                <!-- USER BACCARAT -->
+                <div id="t-us-bcr" class="tab">
+                    <div class="g-head">Baccarat (2 Xu) <button class="btn-rst" onclick="Game.rst('us','bcr')">Reset</button></div>
+                    <div class="board" id="b-us-bcr"></div>
+                    <div class="ctrl">
+                        <div class="grid-4">
+                            <button class="btn-ctrl btn-b" onclick="Game.add('us','bcr','B')">B</button>
+                            <button class="btn-ctrl btn-p" onclick="Game.add('us','bcr','P')">P</button>
+                            <button class="btn-ctrl btn-t" onclick="Game.add('us','bcr','T')">T</button>
+                            <button class="btn-ctrl btn-undo" onclick="Game.und('us','bcr')">⌫</button>
+                        </div>
+                        <button class="btn-run" onclick="Game.run('us','bcr')">PHÂN TÍCH</button>
+                        <div class="loading" id="l-us-bcr"><div class="loading-txt" id="tx-us-bcr">0%</div><div class="progress"><div class="progress-fill" id="pf-us-bcr"></div></div></div>
+                    </div>
+                    <div class="result" id="r-us-bcr">
+                        <div>Dự đoán:</div><div class="pred" id="pd-us-bcr">-</div>
+                        <div class="stats" id="st-us-bcr"></div><div class="note" id="nt-us-bcr"></div>
+                        <div class="sync-area">
+                            <div>Kết quả:</div>
+                            <div class="sync-grid">
+                                <button class="btn-ctrl btn-b" style="width:55px" onclick="Game.syn('us','bcr','B')">B</button>
+                                <button class="btn-ctrl btn-p" style="width:55px" onclick="Game.syn('us','bcr','P')">P</button>
+                                <button class="btn-ctrl btn-t" style="width:55px" onclick="Game.syn('us','bcr','T')">T</button>
+                            </div>
+                            <div class="sync-msg" id="m-us-bcr"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER TAI XIU -->
+                <div id="t-us-tx" class="tab">
+                    <div class="g-head">Tài Xỉu (2 Xu) <button class="btn-rst" onclick="Game.rst('us','tx')">Reset</button></div>
+                    <div class="board" id="b-us-tx"></div>
+                    <div class="ctrl">
+                        <div class="grid-2">
+                            <button class="btn-ctrl btn-tai" onclick="Game.add('us','tx','T')">TÀI</button>
+                            <button class="btn-ctrl btn-xiu" onclick="Game.add('us','tx','X')">XỈU</button>
+                        </div>
+                        <button class="btn-ctrl btn-undo" style="width:100%;margin-bottom:10px" onclick="Game.und('us','tx')">⌫ Xóa</button>
+                        <button class="btn-run" onclick="Game.run('us','tx')">PHÂN TÍCH</button>
+                        <div class="loading" id="l-us-tx"><div class="loading-txt" id="tx-us-tx">0%</div><div class="progress"><div class="progress-fill" id="pf-us-tx"></div></div></div>
+                    </div>
+                    <div class="result" id="r-us-tx">
+                        <div>Dự đoán:</div><div class="pred" id="pd-us-tx">-</div>
+                        <div class="stats" id="st-us-tx"></div><div class="note" id="nt-us-tx"></div>
+                        <div class="sync-area">
+                            <div>Kết quả:</div>
+                            <div class="sync-grid">
+                                <button class="btn-ctrl btn-tai" style="width:80px" onclick="Game.syn('us','tx','T')">TÀI</button>
+                                <button class="btn-ctrl btn-xiu" style="width:80px" onclick="Game.syn('us','tx','X')">XỈU</button>
+                            </div>
+                            <div class="sync-msg" id="m-us-tx"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==========================================
+        // STATE & STORAGE
+        // ==========================================
+        let State = {
+            accounts: JSON.parse(localStorage.getItem('accs')) || [
+                { u: "chihaocute8386", p: "chihao2010", c: 999999999, r: "admin" }
+            ],
+            sys: JSON.parse(localStorage.getItem('sys')) || { theme: 't-1', bg: 'bg-1', music: 'nhac1.mp3' },
+            user: null,
+            tempUser: null,
+            game: { ad: { bcr: [], tx: [] }, us: { bcr: [], tx: [] } },
+            pred: null
+        };
+
+        function save() {
+            localStorage.setItem('accs', JSON.stringify(State.accounts));
+            localStorage.setItem('sys', JSON.stringify(State.sys));
+        }
+
+        // ==========================================
+        // AUDIO
+        // ==========================================
+        const Audio = {
+            init: () => {
+                document.getElementById('bgm').src = State.sys.music;
+                document.getElementById('m-t').value = State.sys.music;
+                Audio.applyTheme();
+            },
+            save: () => {
+                State.sys.music = document.getElementById('m-s').value || 'nhac1.mp3';
+                save();
+                document.getElementById('bgm').src = State.sys.music;
+                alert("Đã lưu nhạc!");
+            },
+            applyTheme: () => {
+                document.body.className = `${State.sys.theme} ${State.sys.bg}`;
+            }
+        };
+
+        // ==========================================
+        // AUTH
+        // ==========================================
+        const Auth = {
+            check: () => {
+                let u = document.getElementById('u-in').value;
+                let p = document.getElementById('p-in').value;
+                let acc = State.accounts.find(a => a.u === u && a.p === p);
+                if (acc) {
+                    State.tempUser = acc;
+                    if (acc.u === "chihaocute8386") {
+                        document.getElementById('s-login').classList.remove('active');
+                        document.getElementById('s-pin').classList.add('active');
+                    } else {
+                        Auth.login(acc);
+                    }
+                } else {
+                    document.getElementById('e-login').style.display = 'block';
+                }
+            },
+            pin: () => {
+                let inputs = document.querySelectorAll('.pin-box');
+                let pin = ""; inputs.forEach(i => pin += i.value);
+                if (pin === "168211") {
+                    Auth.login(State.tempUser);
+                } else {
+                    document.getElementById('e-pin').style.display = 'block';
+                    inputs.forEach(i => i.value = '');
+                    inputs[0].focus();
+                }
+            },
+            login: (acc) => {
+                State.user = acc;
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('s-dash').classList.add('active');
+                document.getElementById('sidebar').style.display = 'flex';
+                
+                if (acc.r === 'admin') {
+                    document.getElementById('nav-admin').style.display = 'flex';
+                    document.getElementById('nav-user').style.display = 'none';
+                    document.getElementById('p-name').innerText = acc.u;
+                    document.getElementById('p-coins').innerText = "Vô Hạn Xu";
+                    Admin.renderList(); Sys.renderSwatches();
+                    UI.tab('ad-bcr', document.querySelector('#nav-admin .nav-btn'));
+                } else {
+                    document.getElementById('nav-admin').style.display = 'none';
+                    document.getElementById('nav-user').style.display = 'flex';
+                    document.getElementById('p-name').innerText = acc.u;
+                    document.getElementById('p-avt').innerText = "👤";
+                    Auth.updCoins();
+                    UI.tab('us-bcr', document.querySelector('#nav-user .nav-btn'));
+                }
+                State.game = { ad: { bcr: [], tx: [] }, us: { bcr: [], tx: [] } };
+                Game.render('ad', 'bcr');
+                Game.render('us', 'bcr');
+            },
+            logout: () => {
+                State.user = null;
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('s-login').classList.add('active');
+                document.getElementById('sidebar').style.display = 'none';
+                document.getElementById('u-in').value = '';
+                document.getElementById('p-in').value = '';
+            },
+            updCoins: () => {
+                if(State.user) document.getElementById('p-coins').innerText = `💰 ${State.user.c} Xu`;
+            }
+        };
+
+        // ==========================================
+        // UI & TABS
+        // ==========================================
+        const UI = {
+            tab: (tabId, btn) => {
+                let menu = btn.closest('.nav');
+                if(menu) menu.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.getElementById('t-' + tabId).classList.add('active');
+            }
+        };
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.onclick = function() { UI.tab(this.dataset.tab, this); };
+        });
+
+        // ==========================================
+        // ADMIN & SYS
+        // ==========================================
+        const Admin = {
+            renderList: () => {
+                let list = document.getElementById('acc-list'); list.innerHTML = '';
+                State.accounts.forEach((a, i) => {
+                    let div = document.createElement('div'); div.className = 'data-item';
+                    div.innerHTML = `<span>${a.u} <br><small style="color:var(--sub)">${a.c} xu</small></span>
+                    ${a.u === "chihaocute8386" ? '' : `<button style="background:#ff3333;color:#fff;border:none;padding:5px 10px;border-radius:5px;" onclick="Admin.del(${i})">Xóa</button>`}`;
+                    list.appendChild(div);
+                });
+            },
+            create: () => {
+                let u = document.getElementById('n-u').value;
+                let p = document.getElementById('n-p').value;
+                let c = parseInt(document.getElementById('n-c').value) || 0;
+                if(!u || !p) return alert("Nhập thiếu!");
+                if(State.accounts.find(a => a.u === u)) return alert("Tên đã tồn tại!");
+                State.accounts.push({u, p, c, r: 'user'});
+                save(); Admin.renderList(); alert("Đã tạo User!");
+            },
+            give: () => {
+                let u = document.getElementById('g-u').value;
+                let c = parseInt(document.getElementById('g-c').value) || 0;
+                let acc = State.accounts.find(a => a.u === u);
+                if(acc) { acc.c += c; save(); Admin.renderList(); alert("Đã cấp xu!"); }
+                else alert("Không tìm thấy!");
+            },
+            del: (i) => {
+                if(confirm("Xóa?")) { State.accounts.splice(i, 1); save(); Admin.renderList(); }
+            }
+        };
+
+        const Sys = {
+            renderSwatches: () => {
+                let themes = document.getElementById('sw-t'); themes.innerHTML = '';
+                let colors = ['#ff8c00','#00e5ff','#ff0055','#00ff88','#fceb00','#c700ff','#ff0044','#00ffcc','#ffffff','#ff6b00'];
+                colors.forEach((c, i) => {
+                    let sw = document.createElement('div'); sw.className = `swatch ${State.sys.theme === 't-'+(i+1)?'active':''}`;
+                    sw.style.background = c; sw.onclick = () => { State.sys.theme = 't-'+(i+1); save(); Audio.applyTheme(); Sys.renderSwatches(); };
+                    themes.appendChild(sw);
+                });
+
+                let bgs = document.getElementById('sw-b'); bgs.innerHTML = '';
+                let bgImgs = [
+                    'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1628260412297-a3377e45006f?q=80&w=200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1581833971358-2c5509b8c150?q=80&w=200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1542451313-32e813a2c221?q=80&w=200&auto=format&fit=crop'
+                ];
+                bgImgs.forEach((img, i) => {
+                    let div = document.createElement('div'); div.className = `bg-item ${State.sys.bg === 'bg-'+(i+1)?'active':''}`;
+                    div.style.backgroundImage = `url(${img})`; div.onclick = () => { State.sys.bg = 'bg-'+(i+1); save(); Audio.applyTheme(); Sys.renderSwatches(); };
+                    bgs.appendChild(div);
+                });
+            }
+        };
+
+        // ==========================================
+        // GAME LOGIC
+        // ==========================================
+        const Game = {
+            add: (role, type, val) => {
+                if (State.game[role][type].length >= 10) return alert("Tối đa 10 cầu!");
+                State.game[role][type].push(val);
+                Game.render(role, type);
+            },
+            und: (role, type) => {
+                State.game[role][type].pop();
+                Game.render(role, type);
+            },
+            rst: (role, type) => {
+                if(confirm("Xóa toàn bộ cầu?")) {
+                    State.game[role][type] = [];
+                    State.pred = null;
+                    document.getElementById(`r-${role}-${type}`).style.display = 'none';
+                    Game.render(role, type);
+                }
+            },
+            render: (role, type) => {
+                let board = document.getElementById(`b-${role}-${type}`);
+                board.innerHTML = '';
+                State.game[role][type].forEach(v => {
+                    let d = document.createElement('div'); d.className = `node ${v.toLowerCase()}`; d.innerText = v; board.appendChild(d);
+                });
+                for(let i = State.game[role][type].length; i < 10; i++) {
+                    let d = document.createElement('div'); d.className = 'node empty'; board.appendChild(d);
+                }
+            },
+            run: (role, type) => {
+                if (State.game[role][type].length < 10) return alert("Nhập đủ 10 cầu!");
+                if (role === 'us' && State.user.c < 2) return alert("Không đủ 2 xu!");
+                
+                if(role === 'us') { State.user.c -= 2; save(); Auth.updCoins(); }
+
+                let load = document.getElementById(`l-${role}-${type}`);
+                let bar = document.getElementById(`pf-${role}-${type}`);
+                let txt = document.getElementById(`tx-${role}-${type}`);
+                let res = document.getElementById(`r-${role}-${type}`);
+                
+                res.style.display = 'none'; load.style.display = 'block'; bar.style.width = '0%';
+                
+                let prog = 0;
+                let intv = setInterval(() => {
+                    prog += 2; bar.style.width = prog + '%'; txt.innerText = prog + '%';
+                    if(prog >= 100) {
+                        clearInterval(intv);
+                        setTimeout(() => {
+                            load.style.display = 'none';
+                            Game.ai(role, type);
+                        }, 200);
+                    }
+                }, 50);
+            },
+            ai: (role, type) => {
+                let hist = State.game[role][type];
+                let isBCR = type === 'bcr';
+                let main = isBCR ? 'B' : 'T'; let sec = isBCR ? 'P' : 'X';
+                
+                let cMain = hist.filter(x => x === main).length;
+                let cSec = hist.filter(x => x === sec).length;
+                let streak = 1, swaps = 0;
+
+                for(let i=hist.length-1; i>0; i--) { if(hist[i] === hist[i-1]) streak++; else break; }
+                for(let i=1; i<hist.length; i++) { if(hist[i] !== hist[i-1]) swaps++; }
+
+                let pred = main; let reason = "";
+
+                if (streak >= 5) { pred = (hist[hist.length-1] === main) ? sec : main; reason = `Bệt dài (${streak} ván). AI bẻ cầu.`; }
+                else if (streak >= 3) { pred = hist[hist.length-1]; reason = `Bệt (${streak} ván). AI bám cầu.`; }
+                else if (Math.abs(cMain - cSec) >= 4) { pred = cMain > cSec ? sec : main; reason = `Lệch lớn. AI chọn cân bằng.`; }
+                else if (swaps >= 7) { pred = hist[hist.length-1] === main ? sec : main; reason = `Cầu 1-1. AI đảo cửa.`; }
+                else { pred = cMain >= cSec ? main : sec; reason = `Không dị thường. AI chọn cửa ưu thế.`; }
+
+                State.pred = pred;
+
+                let pd = document.getElementById(`pd-${role}-${type}`);
+                if(isBCR) { pd.innerText = pred === 'B' ? 'BANKER (B)' : 'PLAYER (P)'; pd.className = `pred ${pred === 'B' ? 'pred-b' : 'pred-p'}`; }
+                else { pd.innerText = pred === 'T' ? 'TÀI' : 'XỈU'; pd.className = `pred ${pred === 'T' ? 'pred-tai' : 'pred-xiu'}`; }
+
+                let st = document.getElementById(`st-${role}-${type}`);
+                st.innerHTML = `
+                    <div class="stat-card"><div class="stat-val">${Math.round(cMain/10*100)}%</div><div class="stat-lbl">Tỷ lệ ${main}</div></div>
+                    <div class="stat-card"><div class="stat-val">${streak}</div><div class="stat-lbl">Bệt</div></div>
+                    <div class="stat-card"><div class="stat-val">${swaps}</div><div class="stat-lbl">Đổi</div></div>
+                `;
+                document.getElementById(`nt-${role}-${type}`).innerText = reason;
+                document.getElementById(`r-${role}-${type}`).style.display = 'block';
+                document.getElementById(`m-${role}-${type}`).innerText = '';
+            },
+            syn: (role, type, actual) => {
+                if(!State.pred) return;
+                let msg = document.getElementById(`m-${role}-${type}`);
+                let win = (actual === State.pred);
+                msg.innerText = win ? "🎉 CHÍNH XÁC!" : "❌ SAI RỒI!";
+                msg.style.color = win ? "#00ff88" : "#ff3333";
+
+                State.game[role][type].push(actual);
+                if(State.game[role][type].length > 10) State.game[role][type].shift();
+                State.pred = null;
+                Game.render(role, type);
+
+                setTimeout(() => { document.getElementById(`r-${role}-${type}`).style.display = 'none'; }, 2500);
+            }
+        };
+
+        // Init
+        Audio.init();
+        Game.render('ad', 'bcr'); Game.render('us', 'bcr');
+        Game.render('ad', 'tx'); Game.render('us', 'tx');
+        
+        // PIN Auto
+        document.querySelectorAll('.pin-box').forEach(input => {
+            input.oninput = (e) => {
+                if(e.target.value.length === 1) {
+                    let idx = parseInt(e.target.dataset.i);
+                    let next = document.querySelector(`.pin-box[data-i="${idx+1}"]`);
+                    if(next) next.focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
